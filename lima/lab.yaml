@@ -1,0 +1,31 @@
+# 学習用の Ubuntu VM
+# 起動: limactl start --name=lab ./lima/lab.yaml
+# 入る: limactl shell lab
+# 停止: limactl stop lab / 削除: limactl delete lab
+minimumLimaVersion: 2.0.0
+
+base:
+- template:_images/ubuntu-24.04
+
+# Apple の Virtualization.framework を使う
+vmType: vz
+
+# VM に割り当てるハードウェア（VM の手順4で値を変えて試す）
+cpus: 4
+memory: 4GiB
+disk: 30GiB
+
+# VM の中でさらに VM を動かす（VM の発展手順6で KVM を使うため）
+# Apple M3 以降・vmType: vz のときだけ使える
+nestedVirtualization: true
+
+# Lima が containerd を自動で入れないようにする
+# （コンテナの手順1で、自分で Docker を入れて観察するため）
+containerd:
+  system: false
+  user: false
+
+# このリポジトリだけを VM の中から読み書きできるようにする
+mounts:
+- location: "~/ghq/github.com/consolelogfuku/container-vm-lab"
+  writable: true
